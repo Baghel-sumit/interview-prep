@@ -1,0 +1,73 @@
+DBMS ? 
+
+> Data ? 
+> Collection of raw bytes
+
+Example : 
+Image -> it contains height, width, pixels, means collection of bytes
+Integers -> collection of bytes
+
+|-----------|
+|           |
+|           |  -> Memory
+|           | 
+|-----------|
+
+Raw Data > Process/interpret > meaning > information
+
+1. Data acts as a raw material
+2. Information => Processed data is called information
+
+Types of data 
+
+1. Qualitative   2. Quantitative
+
+** Data is the new oil. **
+
+Database ?
+> Database is and electronic place/system where data is stored in a way that it can be easily accessed, managed and updated. To make real use data, we need Database Management systems.
+
+Database Management Systems ?
+> DB ( Stores )
+> Set of programs ( Database Management Systems )
+    > access
+    > add
+    > Update
+    > Delete
+
+* Primary Goal > to provide a way to retrieve, store and upate data easily 
+
+------------- DBMS vs File Systems ------------------
+
+File system disadvantages
+
+1. Data redundancy & inconsistency
+2. Difficulty in accessing data
+3. Data Isolation
+4. Integrity Problems
+5. Atomicity Problems
+6. Concurrent access anomalies
+7. Security Problems
+
+* Above 7 are also the advantages of DBMS ( answer to "why to use DBMS ?" )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+------------ Database and it's Architecture ---------------
+
+Abstraction > Show only required data and hide unnecessary details for simplification
+
+
+
+
+
+
