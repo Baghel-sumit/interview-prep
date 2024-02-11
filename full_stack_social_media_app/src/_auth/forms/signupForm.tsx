@@ -13,10 +13,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { signupValidation } from "@/lib/validation";
 import Loader from "@/components/Shared/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queryAndMutations";
+import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
-  const isLoading = false;
+  const { toast } = useToast();
+  const { checkAuthUser } = useUserContext();
+  const navigate = useNavigate();
+
+  const { mutateAsync: createUserAccount, isPending: isCreatingAccount  } = useCreateUserAccount();
+  const { mutateAsync: signInAccount  } = useSignInAccount();
 
   const form = useForm<z.infer<typeof signupValidation>>({
     resolver: zodResolver(signupValidation),
@@ -28,8 +36,26 @@ const SignupForm = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof signupValidation>) {
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof signupValidation>) => {
+    const newUser = await createUserAccount(values);
+
+    if (!newUser) {
+      return toast({ title: 'Sign Up failed. Please try again.' });
+    }
+
+    const session = await signInAccount(values);
+
+    if (!session) {
+      return toast({ title: 'Sign in failed. Please try again.' })
+    }
+
+    const isLoggedIn = await checkAuthUser();
+    if (isLoggedIn) {
+      form.reset();
+      navigate('/');
+    } else {
+      toast({ title: 'Sign up failed. Please try again.' });
+    }
   }
 
   return (
@@ -91,8 +117,8 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className={`shad-button_primary ${isLoading ? 'shad-button_disabled' : ''}`}>
-            {isLoading ? (
+          <Button type="submit" className={`shad-button_primary ${isCreatingAccount ? 'shad-button_disabled' : ''}`}>
+            {isCreatingAccount ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
