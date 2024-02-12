@@ -2,8 +2,10 @@ import React from 'react'
 
 const Explore = () => {
   return (
-    <div>
-      Explore tab
+    <div className='explore-container'>
+      <div >
+
+      </div>
     </div>
   )
 }

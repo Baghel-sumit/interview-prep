@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import './globals.css';
 import SigninForm from './_auth/forms/signinForm';
 import SignupForm from './_auth/forms/signupForm';
-import { Home, AllUsers, CreatePost, EditPost, Explore, PostDetails, Profile, Saved, UpdateProfile, LikedPost } from './_root/pages';
+import { Home, AllUsers, CreatePost, EditPost, Explore, PostDetails, Profile, Saved, UpdateProfile } from './_root/pages';
 import AuthLayout from './_auth/AuthLayout';
 import RootLayout from './_root/RootLayout';
 
@@ -23,7 +23,7 @@ const App = () => {
           <Route path="/saved" element={<Saved />} />
           <Route path="/all-users" element={<AllUsers />} />
           <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/edit-post" element={<EditPost/>} />
+          <Route path="/edit-post/:id" element={<EditPost/>} />
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/profile/:id/*" element={<Profile />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />

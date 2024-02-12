@@ -12,15 +12,17 @@ import { postValidation } from "@/lib/validation";
 import { Models } from "appwrite";
 import { useUserContext } from "@/context/AuthContext"
 import { useToast } from "../ui/use-toast"
-import { useCreatePost } from "@/lib/react-query/queryAndMutations"
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queryAndMutations"
 import Loader from "../Shared/Loader"
 
 type PostFormProps = {
   post? : Models.Document;
+  action: 'Create' | 'Update'
 }
 
-const PostForm = ({ post }: PostFormProps) => {
+const PostForm = ({ post, action }: PostFormProps) => {
   const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } = useUpdatePost();
   const { user } = useUserContext();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -36,6 +38,19 @@ const PostForm = ({ post }: PostFormProps) => {
   })
 
   const onSubmit = async (values: z.infer<typeof postValidation>) => {
+    if (post && action === 'Update') {
+      const updatedPost = await updatePost({
+        ...values,
+        imageId: post?.imageId,
+        imageUrl: post?.imageUrl,
+        postId: post?.$id || '',
+      });
+      if (!updatedPost) {
+        toast({ title: 'Please try again.' });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
+
     const newPost = await createPost({
       ...values,
       userId: user.id
@@ -44,6 +59,7 @@ const PostForm = ({ post }: PostFormProps) => {
       toast({ title: 'Please try again.' });
     }
     navigate('/');
+
   }
 
   return (
@@ -69,7 +85,7 @@ const PostForm = ({ post }: PostFormProps) => {
             <FormItem>
               <FormLabel className="shad-form_label">Add Photos</FormLabel>
               <FormControl>
-                <FileUploader fieldChange={field.onChange} mediaUrl={post?.url} />
+                <FileUploader fieldChange={field.onChange} mediaUrl={post?.imageUrl} />
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>
@@ -103,14 +119,14 @@ const PostForm = ({ post }: PostFormProps) => {
         />
         <div className="flex gap-4 items-center justify-center">
           <Button type="button" className="shad-button_dark_4">Cancel</Button>
-          <Button type="submit" className={`shad-button_primary whitespace-nowrap ${isLoadingCreate && 'shad-button_disabled'}`}>
+          <Button type="submit" className={`shad-button_primary whitespace-nowrap ${(isLoadingCreate || isLoadingUpdate) && 'shad-button_disabled'}`} disabled={isLoadingCreate || isLoadingUpdate}>
             {
-              isLoadingCreate ? (
+              (isLoadingCreate || isLoadingUpdate) ? (
                 <div className="flex-center gap-2">
-                  <Loader /> Submitting...
+                  <Loader /> {` ${action === 'Create' ? 'Creating' : 'Updating'}...`}
                 </div>
               ) : (
-                "Submit"
+                `${action} post`
               )
             }
           </Button>
