@@ -2,8 +2,8 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <div>
-      Home  
+    <div className='flex flex-1'>
+      Home
     </div>
   )
 }
