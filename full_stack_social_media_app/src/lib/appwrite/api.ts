@@ -53,7 +53,8 @@ export const saveUserToDB = async (user: {
   }
 }
 
-export const signInAccount = async (user: { email: string, password: string }) => {
+export const signInAccount = async (user: { email?: string, password?: string }) => {
+  if (!user.email || !user.password) return;
   try {
     const session = await acount.createEmailSession(user.email, user.password);
 

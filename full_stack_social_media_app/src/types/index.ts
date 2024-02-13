@@ -53,8 +53,8 @@ export type IUser = {
 };
 
 export type INewUser = {
-  name: string;
-  email: string;
-  username: string;
-  password: string;
+  name?: string;
+  email?: string;
+  username?: string;
+  password?: string;
 };

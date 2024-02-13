@@ -3,7 +3,7 @@ import { z } from "zod"
 export const signupValidation = z.object({
   name: z.string().min(2, { message: 'Too Short' }),
   username: z.string().min(2).max(50, { message: 'Too Short' }),
-  email: z.string().email(),
+  email: z.string().email().min(2, { message: 'Please provide a valid email.' }),
   password: z.string().min(8, { message: 'Password must be at least 8 characters.' })
 });
 

@@ -40,10 +40,13 @@ const PostForm = ({ post, action }: PostFormProps) => {
   const onSubmit = async (values: z.infer<typeof postValidation>) => {
     if (post && action === 'Update') {
       const updatedPost = await updatePost({
-        ...values,
         imageId: post?.imageId,
         imageUrl: post?.imageUrl,
         postId: post?.$id || '',
+        caption: values.caption,
+        file: values.file,
+        location: values.location,
+        tags: values.tags
       });
       if (!updatedPost) {
         toast({ title: 'Please try again.' });
@@ -52,8 +55,11 @@ const PostForm = ({ post, action }: PostFormProps) => {
     }
 
     const newPost = await createPost({
-      ...values,
-      userId: user.id
+      userId: user.id,
+      caption: values.caption,
+      file: values.file,
+      location: values.location,
+      tags: values.tags
     });
     if (!newPost) {
       toast({ title: 'Please try again.' });
