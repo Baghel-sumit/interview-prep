@@ -372,3 +372,62 @@ export const searchPosts = async (searchTerm: string) => {
     console.log(error);
   }
 }
+
+export const getUsers = async (limit?: number) => {
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      [Query.orderDesc('$createdAt'), Query.limit(limit || 10)]
+    );
+
+    if (!users) throw Error;
+
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getInfiniteUsers = async ({ pageParam }: { pageParam: number }) => {
+  const queries: any[] = [Query.orderDesc('$createdAt'), Query.limit(10)];
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      queries
+    );
+
+    if (!users) throw Error;
+
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getInfiniteSavedPosts = async ({ pageParam, postIds }: { pageParam: number | null, postIds?: string[] }) => {
+  const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(10)];
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+  if (postIds?.length) {
+    queries.push(Query.equal('$id', postIds));
+  }
+  try {
+    const savedPosts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      queries
+    );
+
+    if (!savedPosts) throw Error;
+
+    return savedPosts;
+  } catch (error) {
+    console.log(error);
+  }
+}

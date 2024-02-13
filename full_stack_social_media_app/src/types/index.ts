@@ -49,7 +49,7 @@ export type IUser = {
   email: string;
   imageUrl: string;
   bio: string;
-  save: Models.Document[];
+  save?: Models.Document[];
 };
 
 export type INewUser = {
