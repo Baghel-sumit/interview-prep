@@ -18,6 +18,11 @@ const LeftSideBar = () => {
     }
   },[isSuccess, navigate]);
 
+  const handleSignout = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    signOut();
+  }
+
   return (
     <nav className='leftsidebar'>
       <div className='flex flex-col gap-11'>
@@ -50,7 +55,7 @@ const LeftSideBar = () => {
           })}
         </ul>
       </div>
-      <Button variant="ghost" className="shad-button_ghost">
+      <Button variant="ghost" className="shad-button_ghost" onClick={handleSignout}>
         <img src="/assets/icons/logout.svg" alt="logout" />
         <p className='small-medium lg:base-medium'>Logout</p>
       </Button>

@@ -2,19 +2,14 @@ import GridPostList from "@/components/Shared/GridPostList";
 import Loader from "@/components/Shared/Loader";
 import { Button } from "@/components/ui/button";
 import { savedPageLinks } from "@/constants"
-import { useGetCurrentUser, useGetSavedPosts } from "@/lib/react-query/queryAndMutations";
+import { useGetSavedPosts } from "@/lib/react-query/queryAndMutations";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 const Saved = () => {
   const { ref, inView } = useInView();
   const [selectedLink, setSelectedLink] = useState<string>(savedPageLinks[0].slug);
-  const { data: user } = useGetCurrentUser();
-  const savedPostIds = user?.save?.reduce((acc, item)=> {
-    if (item.post.$id) acc.push(item.post.$id);
-    return acc;
-  }, []);
-  const { data: savedPosts, fetchNextPage, hasNextPage } = useGetSavedPosts(savedPostIds);
+  const { data: savedPosts, fetchNextPage, hasNextPage } = useGetSavedPosts();
 
   useEffect(()=> {
     if (hasNextPage) fetchNextPage();
@@ -27,7 +22,7 @@ const Saved = () => {
           <img src="/assets/icons/bookmark.svg" width={36} height={36} alt="people" className="invert-white" />
           <h2 className="h3-bold md:h2-bold text-left w-full">Saved Posts</h2>
         </div>
-        <div className="max-w-xs xs:max-w-5xl flex-start gap-3 justify-start w-full overflow-auto custom-scrollbar">
+        <div className="max-w-5xl flex items-center gap-3 w-full flex-wrap lg:justify-start justify-center">
           {savedPageLinks.map((link)=> (
             <Button 
               key={link.slug} 
@@ -45,7 +40,7 @@ const Saved = () => {
         <div className='flex flex-wrap gap-9 w-full max-w-5xl'>
           {!savedPosts ? (
             <Loader />
-          ) : savedPosts.pages.map((item, index)=> (
+          ) : savedPosts && savedPosts.pages.map((item, index)=> (
             <GridPostList key={`page-${index}`} posts={item?.documents} showStats={false} />
           ))}
         </div>

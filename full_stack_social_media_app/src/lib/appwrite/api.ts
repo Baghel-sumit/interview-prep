@@ -1,5 +1,5 @@
 import { INewPost, INewUser, IUpdatePost } from "@/types";
-import { ID, Query } from "appwrite";
+import { ID, Models, Query } from "appwrite";
 import { acount, avatars, databases, appwriteConfig, storage } from './config';
 
 export const createUserAccount = async (user: INewUser) => {
@@ -86,8 +86,7 @@ export const getCurrentUser = async () => {
 
 export const signOutAccount = async () => {
   try {
-    const session = await acount.deleteSession('current');
-    return session;
+    await acount.deleteSession('current');
   } catch (error) {
     console.log(error);
   }
@@ -409,15 +408,25 @@ export const getInfiniteUsers = async ({ pageParam }: { pageParam: number }) => 
   }
 }
 
-export const getInfiniteSavedPosts = async ({ pageParam, postIds }: { pageParam: number | null, postIds?: string[] }) => {
+export const getInfiniteSavedPosts = async ({ pageParam }: { pageParam: number | null }) => {
   const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(10)];
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam.toString()));
   }
-  if (postIds?.length) {
-    queries.push(Query.equal('$id', postIds));
-  }
   try {
+    let savedPostIds = [];
+    // get current user
+    const currentUser = await getCurrentUser();
+    if (currentUser) {
+      savedPostIds = currentUser?.save?.reduce((acc: string[], item: { post: Models.Document })=> {
+        if (item.post.$id) acc.push(item.post.$id);
+        return acc;
+      }, []);
+      if (savedPostIds.length) {
+        queries.push(Query.equal('$id', savedPostIds));
+      }
+    }
+
     const savedPosts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,

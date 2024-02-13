@@ -6,7 +6,7 @@ const PeopleCard = ({ persons }: { persons?: Models.Document[] }) => {
   return (
     <ul className='grid-container'>
       {persons?.map((person)=> (
-      <div className="flex-center flex-col gap-2 cursor-pointer w-56 bg-transparent rounded-3xl border border-dark-2 p-5">
+      <div key={person.$id} className="flex-center flex-col gap-2 cursor-pointer w-56 bg-transparent rounded-3xl border border-dark-2 p-5">
         <img 
           src={person?.imageUrl || "/assets/icons/profile-placeholder.svg"} 
           alt="person" width={64} height={64} 
